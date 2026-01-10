@@ -1,73 +1,76 @@
-# Ralph-Antigravity
+# 🤖 Ralph-Antigravity: Your AI Developer 🚀
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**Ralph-Antigravity** is like having a robot developer who works on your project while you sleep (or have a coffee! ☕). It takes your "Idea List" and turns it into real code, one small piece at a time.
 
-**Ralph-Antigravity** is an autonomous, iterative development workflow for [Antigravity](https://deepmind.google/technologies/gemini/) (Gemini-based AI agent). 
+---
 
-Inspired by the "Ralph" pattern originally conceived by Geoffrey Huntley for [AMP](https://github.com/snarktank/ralph) and later adapted for [Claude Code](https://github.com/frankbria/ralph-claude-code), this implementation brings tight, verifiable iteration cycles to the Gemini ecosystem with first-class **GitHub Issues** integration for a multi-layered audit trail.
+## 👋 What is this? (The Simple Version)
 
-## 🚀 Core Philosophy
+Imagine you are building a website. You have a list of things to do:
+1. "Add a logo"
+2. "Change the background color"
+3. "Add a 'Contact Us' button"
 
-1.  **Iterative Atomicity**: Tasks are broken down into small, verifiable "stories".
-2.  **GitHub as Source of Truth**: GitHub Issues act as the master task list and historical audit record.
-3.  **Clean Context Cycles**: The agent implements one story at a time, ensuring maximum accuracy and minimal "context rot".
-4.  **Automatic Verification**: Every cycle includes mandatory tests/linting and optional multimodal (screenshot) validation.
+Usually, you would have to write all that code yourself. **Ralph-Antigravity** does the hard work for you. It reads your list, writes the code, tests it to make sure it works, and then tells you it's finished.
 
-## 🛠 Features
+## ✨ Why even use this?
 
--   **Autonomous Loop**: Automatically picks the next open GitHub issue and solves it.
--   **GitHub Sync**: Bidirectional sync between local `prd.md` and GitHub Issues.
--   **Detailed Audit Trail**: Every closure includes a "Summary of Work" comment on GitHub with linked commits.
--   **Safe and Predictable**: "Wait for User" policy on any synchronization failure or API error.
--   **Multimodal Ready**: Support for Gemini vision-based UI verification.
+*   **No Overwhelm**: It works on ONE thing at a time. No more getting lost in thousands of lines of code.
+*   **Proof of Work**: Everything it does is saved on GitHub, so you (and your teacher!) can see exactly how it solved each problem.
+*   **Smart Testing**: It checks its own work! If it mentions "UI", it can even take a screenshot to show you how it looks.
 
-## 📦 Installation
+---
 
-To use this workflow in your project:
+## 🚀 How to set it up (Easy Mode)
 
-1.  **Clone this repository** or copy the `.agent/workflows/` and `scripts/` directories to your project.
-2.  **Initialize GitHub CLI**: Ensure you have [`gh`](https://cli.github.com/) installed and authenticated (`gh auth login`).
-3.  **Bootstrap**:
-    ```bash
-    antigravity initialize ralph-antigravity
-    ```
+### 1. Get the files
+Copy the folders from this repository into your project folder. You need:
+*   `.agent/workflows/` (The instructions for the AI)
+*   `src/` (The "brain" of the loop)
 
-## 📖 Usage Guide
+### 2. Connect to GitHub
+You need the **GitHub CLI** (a tool that lets the AI talk to GitHub).
+*   Download it here: [cli.github.com](https://cli.github.com/)
+*   In your terminal, type: `gh auth login` and follow the steps in your browser.
 
-### Step 0: Brainstorm your PRD (New!)
-If you're starting from scratch, use the brainstorming workflow:
+### 3. Initialize
+Tell Antigravity (your AI assistant):
+*"Antigravity, initialize ralph-antigravity for this project."*
+
+---
+
+## 📖 How to use it step-by-step
+
+### Step 1: Brainstorm your idea 🧠
+If you aren't sure where to start, type:
 ```bash
 /prd-brainstorm
 ```
-I will chat with you to define your goals and automatically generate your `prd.md`.
+I will chat with you about your idea and create a file called `prd.md` for you.
 
-### Step 1: Define your PRD
-If you already have requirements, create or edit your `prd.md`:
-```markdown
-# Product Requirements Document
-- [ ] Feature: Add user authentication
-- [ ] Bug: Fix navigation overflow on mobile
-```
-
-### Step 2: Sync to GitHub
-Use the dedicated sync command:
+### Step 2: Upload your tasks ☁️
+Once your `prd.md` list is ready, type:
 ```bash
 /ralph-sync
 ```
-This will turn your local `prd.md` checklist into GitHub Issues.
+This sends your list to GitHub as "Issues" (a fancy word for a To-Do list on the web).
 
-### Step 3: Run the Autonomous Loop
+### Step 3: Start the robot! 🤖
+Type:
 ```bash
 /ralph-antigravity start
 ```
-Antigravity will now:
-1.  Fetch the next issue from GitHub.
-2.  Plan the implementation.
-3.  Write the code.
-4.  Run tests.
-5.  Commit with the issue number (e.g., `fixes #1`).
-6.  Close the issue with a summary comment.
+**Now watch the magic happen!** I will pick the first task, write the code, and close the task when it's done.
 
-## 📜 License
+---
 
-Distributed under the MIT License. See `LICENSE` for more information.
+## 🆘 Troubleshooting (If things go wrong)
+
+*   **"gh command not found"**: This means you need to install the GitHub CLI. Ask me "How do I install gh CLI on [my OS]?" and I'll help!
+*   **"No prd.md found"**: Make sure you have a file named `prd.md` in your main project folder.
+*   **The AI gets stuck**: Just send a message! I'm here to help you get back on track.
+
+## 📜 Legal Stuff
+This project is under the **MIT License**. That means it's free for everyone to use and learn from!
+
+Happy Coding! 🎉
