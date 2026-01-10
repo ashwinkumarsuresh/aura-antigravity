@@ -50,10 +50,11 @@ If you already have requirements, create or edit your `prd.md`:
 ```
 
 ### Step 2: Sync to GitHub
+Use the dedicated sync command:
 ```bash
-/ralph-antigravity sync
+/ralph-sync
 ```
-This will turn your checklist into GitHub Issues.
+This will turn your local `prd.md` checklist into GitHub Issues.
 
 ### Step 3: Run the Autonomous Loop
 ```bash
