@@ -106,6 +106,23 @@ When you sync this, Ralph automatically applies `scope:web` and `feature:user-pr
 /ralph-antigravity start --scope web --feature user-profile
 ```
 
+### 8. Adopting Ralph in an Existing Project 🛫
+Don't worry, you don't have to start from zero! You can bring Ralph into a project you've already been working on for months.
+
+#### How to Onboard:
+1. **Copy the Files**: Copy the `src/` folder and the `.agent/workflows/` folder into your project.
+2. **Run the Onboarder**: Type:
+   ```bash
+   /ralph-onboard
+   ```
+3. **What I will do**:
+   - **Convention Check**: I'll read your code to learn your style (tabs vs spaces, etc.).
+   - **Debt Collection**: I'll scan for `TODO` comments and turn them into your first `prd.md`.
+   - **Context Anchoring**: I'll create `ARCH.md` files for your folders to record how they work.
+
+#### Pro-Tip: The "Quarantine" Strategy
+If you have a messy legacy folder, you can tell me to ignore it while I work on new features. This prevents me from "learning" bad habits from the old code!
+
 ---
 
 ### 💡 Pro-Tip for Junior Devs:
