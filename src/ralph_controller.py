@@ -52,19 +52,30 @@ class RalphController:
         print(f"Active Task: #{task['number']} - {task['title']}")
         return task
 
-    def finish_task(self, summary, commit_hash=None):
-        """Close the task on GitHub and update state."""
+    def finish_task(self, summary=None, commit_hash=None):
+        """Close the task on GitHub and update state using walkthrough artifact."""
         if not self.state["current_task"]:
             print("No active task to finish.")
             return
 
         task_id = self.state["current_task"]["id"]
         
-        # 1. Post final summary as comment
-        full_comment = f"### ✅ Task Complete\n\n**Summary:** {summary}\n"
+        # 1. Prefer walkthrough.md for the summary
+        walkthrough_path = os.path.join(self.project_dir, "walkthrough.md")
+        if os.path.exists(walkthrough_path):
+            with open(walkthrough_path, 'r') as f:
+                walkthrough_content = f.read()
+            full_comment = f"### ✅ Task Complete (via Antigravity Walkthrough)\n\n{walkthrough_content}\n"
+        elif summary:
+            full_comment = f"### ✅ Task Complete\n\n**Summary:** {summary}\n"
+        else:
+            print("Error: No walkthrough.md found and no summary provided.")
+            return
+
         if commit_hash:
             full_comment += f"\n**Commit:** {commit_hash}"
         
+        # 2. Post final summary as comment
         run_command(["gh", "issue", "comment", str(task_id), "--body", full_comment])
         
         # 2. Close issue
@@ -84,7 +95,8 @@ if __name__ == "__main__":
         if cmd == "next":
             controller.start_iteration()
         elif cmd == "finish":
-            if len(sys.argv) > 2:
-                controller.finish_task(sys.argv[2])
-            else:
-                print("Usage: finish [summary]")
+            summary = sys.argv[2] if len(sys.argv) > 2 else None
+            controller.finish_task(summary)
+        elif cmd == "verify-ui":
+             print("UI Verification mode enabled. Please capture a screenshot and provide it to the agent.")
+             # This is a placeholder for multimodal instruction

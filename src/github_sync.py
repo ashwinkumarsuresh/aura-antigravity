@@ -20,9 +20,27 @@ def get_github_issues():
         return json.loads(output)
     return []
 
-def create_github_issue(title, body):
+def ensure_label_exists(name, color="EDEDED"):
+    """Check if a label exists, and create it if not."""
+    labels = run_command(["gh", "label", "list", "--json", "name"])
+    if labels:
+        label_names = [l['name'] for l in json.loads(labels)]
+        if name in label_names:
+            return True
+    
+    print(f"Creating label: {name}")
+    run_command(["gh", "label", "create", name, "--color", color])
+    return True
+
+def create_github_issue(title, body, labels=None):
     """Create a new GitHub issue."""
-    output = run_command(["gh", "issue", "create", "--title", title, "--body", body])
+    cmd = ["gh", "issue", "create", "--title", title, "--body", body]
+    if labels:
+        for label in labels:
+            ensure_label_exists(label)
+        cmd.extend(["--label", ",".join(labels)])
+        
+    output = run_command(cmd)
     if output:
         print(f"Created issue: {output}")
         return output
@@ -39,12 +57,26 @@ def parse_prd(filepath):
         lines = f.readlines()
         
     for line in lines:
-        # Match markdown checkboxes: - [ ] Task Title OR - [x] Task Title
         match = re.match(r'^\s*-\s*\[([ xX])\]\s*(.*)', line)
         if match:
             status = match.group(1).lower() == 'x'
-            title = match.group(2).split('(')[0].strip() # Strip existing links/IDs
-            tasks.append({"title": title, "completed": status, "raw": line.strip()})
+            title_part = match.group(2)
+            
+            # Detect dependencies like (requires #12)
+            dep_match = re.search(r'\(requires\s*#(\d+)\)', title_part)
+            dependency = dep_match.group(1) if dep_match else None
+            
+            # Detect UI flag
+            is_ui = any(kw in title_part.lower() for kw in ["ui", "frontend", "design", "css"])
+            
+            title = title_part.split('(')[0].strip()
+            tasks.append({
+                "title": title, 
+                "completed": status, 
+                "raw": line.strip(),
+                "dependency": dependency,
+                "is_ui": is_ui
+            })
             
     return tasks
 
@@ -58,7 +90,16 @@ def sync_prd_to_github(prd_path):
     for task in local_tasks:
         if not task['completed'] and task['title'] not in gh_titles:
             print(f"Syncing new task to GitHub: {task['title']}")
-            create_github_issue(task['title'], "Created automatically by Ralph-Antigravity-Git-Issues")
+            
+            body = "Created automatically by Ralph-Antigravity"
+            if task['dependency']:
+                body += f"\n\n**Dependency:** Requires #{task['dependency']}"
+            
+            labels = ["ralph-autonomous"]
+            if task['is_ui']:
+                labels.append("ui-verification")
+                
+            create_github_issue(task['title'], body, labels)
 
 if __name__ == "__main__":
     # Example usage

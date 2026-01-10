@@ -6,37 +6,28 @@ description: Start the autonomous Ralph development loop for the current project
 
 This workflow executes a tight, iterative development loop using Gemini (Antigravity).
 
-## Usage
+## Workflow Logic (Artifact-Driven Loop)
 
-1. **Initialize**
-   - Copy `prd_template.md` to `prd.md`.
-   - Run `python src/github_sync.py` to push tasks to GitHub.
+1. **Phase 1: Sync & Select**
+   - Run `python src/github_sync.py` to sync local `prd.md` with GitHub Issues.
+   - Run `python src/ralph_controller.py next` to pick the highest priority open issue.
 
-2. **Loop Iteration**
-   - Run `python src/ralph_controller.py next` to pick the next task.
+2. **Phase 2: Planning (Required)**
+   - Antigravity *must* analyze the fetched task and create an `implementation_plan.md` (Artifact).
+   - If in "Strict Mode", wait for user approval of the plan.
 
-3. **Execution**
-   - Perform the code changes specified in the plan.
-   - Run project-specific tests.
+3. **Phase 3: Implementation**
+   - Execute the code changes specified in the `implementation_plan.md`.
+   - Update `task.md` to reflect progress.
 
-4. **Closure**
-   - Run `python src/ralph_controller.py finish "Implementation Summary Here"` to close the GitHub issue and post the summary.
+4. **Phase 4: Verification & Walkthrough (Required)**
+   - Run project-specific tests (Verify via logs/output).
+   - **Multimodal Check**: If the task involves UI, run `browser_subagent` to capture a screenshot for vision-based verification.
+   - Antigravity *must* create a `walkthrough.md` (Artifact) summarizing the changes and verification results.
 
-## Workflow Logic (Internal)
-
-1. **Verify State**
-   - Read local `prd.md`.
-   - Sync with GitHub Issues using `python src/github_sync.py`.
-
-2. **Select Task**
-   - Pick the highest priority open issue using `python src/ralph_controller.py next`.
-
-3. **Plan & Execute**
-   - Execute Implementation Plan for that task.
-
-4. **Verify**
-   - Run verification (tests/screenshots).
-
-5. **Finalize**
+5. **Phase 5: Automated Audit & Closure**
    - Commit changes referencing the issue ID.
-   - Close the GitHub issue using `python src/ralph_controller.py finish [SUMMARY]`.
+   - Run `python src/ralph_controller.py finish` (This script will automatically read the `walkthrough.md` and post it to GitHub before closing the issue).
+
+6. **Iterate**
+   - Return to Phase 1.
