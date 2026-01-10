@@ -2,9 +2,9 @@
 description: Start the autonomous Ralph development loop for the current project
 ---
 
-# Ralph-Antigravity-Git-Issues Workflow
+# Ralph-Antigravity Workflow
 
-This workflow executes a tight, iterative development loop using Gemini (Antigravity) and GitHub Issues.
+This workflow executes a tight, iterative development loop using Gemini (Antigravity).
 
 ## Usage
 
@@ -14,7 +14,6 @@ This workflow executes a tight, iterative development loop using Gemini (Antigra
 
 2. **Loop Iteration**
    - Run `python src/ralph_controller.py next` to pick the next task.
-   - Antigravity analyzes the fetched task and creates a local `implementation_plan.md`.
 
 3. **Execution**
    - Perform the code changes specified in the plan.

@@ -1,8 +1,8 @@
-# Ralph-Antigravity-Git-Issues
+# Ralph-Antigravity
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Ralph-Antigravity-Git-Issues** is an autonomous, iterative development workflow for [Antigravity](https://deepmind.google/technologies/gemini/) (Gemini-based AI agent). 
+**Ralph-Antigravity** is an autonomous, iterative development workflow for [Antigravity](https://deepmind.google/technologies/gemini/) (Gemini-based AI agent). 
 
 Inspired by the "Ralph" pattern originally conceived by Geoffrey Huntley for [AMP](https://github.com/snarktank/ralph) and later adapted for [Claude Code](https://github.com/frankbria/ralph-claude-code), this implementation brings tight, verifiable iteration cycles to the Gemini ecosystem with first-class **GitHub Issues** integration for a multi-layered audit trail.
 
@@ -18,7 +18,7 @@ Inspired by the "Ralph" pattern originally conceived by Geoffrey Huntley for [AM
 -   **Autonomous Loop**: Automatically picks the next open GitHub issue and solves it.
 -   **GitHub Sync**: Bidirectional sync between local `prd.md` and GitHub Issues.
 -   **Detailed Audit Trail**: Every closure includes a "Summary of Work" comment on GitHub with linked commits.
--   **Safety First**: "Wait for User" policy on any synchronization failure or API error.
+-   **Safe and Predictable**: "Wait for User" policy on any synchronization failure or API error.
 -   **Multimodal Ready**: Support for Gemini vision-based UI verification.
 
 ## 📦 Installation
@@ -29,7 +29,7 @@ To use this workflow in your project:
 2.  **Initialize GitHub CLI**: Ensure you have [`gh`](https://cli.github.com/) installed and authenticated (`gh auth login`).
 3.  **Bootstrap**:
     ```bash
-    antigravity initialize ralph-antigravity-git-issues
+    antigravity initialize ralph-antigravity
     ```
 
 ## 📖 Usage Guide
@@ -51,13 +51,13 @@ If you already have requirements, create or edit your `prd.md`:
 
 ### Step 2: Sync to GitHub
 ```bash
-/ralph-antigravity-git-issues sync
+/ralph-antigravity sync
 ```
 This will turn your checklist into GitHub Issues.
 
 ### Step 3: Run the Autonomous Loop
 ```bash
-/ralph-antigravity-git-issues start
+/ralph-antigravity start
 ```
 Antigravity will now:
 1.  Fetch the next issue from GitHub.
