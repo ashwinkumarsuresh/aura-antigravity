@@ -82,6 +82,25 @@ Don't worry, you don't have to start from zero! You can bring Ralph into a proje
 2. **Run the Onboarder**: Type: `/ralph-onboard`
 3. **What I will do**: I'll scan your code for formatting patterns and technical debt (`TODO` comments) to build your first `prd.md`.
 
+### 9. Safety & Resilience (Architecture 7.0) 🛡️
+As you give Ralph more autonomy, we need to make sure he doesn't break your `main` branch or spin in an infinite loop.
+
+#### A. Task-Specific Branching
+Ralph no longer works on `main`. Every time he starts a task, he creates a temporary branch:
+- **Format**: `ralph/issue-[ID]-[Title]`
+- **Benefit**: You can review his code in a Pull Request before it ever touches your production code.
+
+#### B. The 5-Attempt Rule
+If a task is too hard or tests keep failing, Ralph won't keep trying forever.
+- Ralph keeps a counter in `ralph_status.json`.
+- **Max Retries**: 5 attempts.
+- **Fail-Safe**: After 5 failures, Ralph marks the GitHub issue with `ralph-blocked` and stops to wait for your help.
+
+#### C. Documentation First
+Architecture 7.0 adds a mandatory **Documentation Phase**. 
+- Ralph is instructed to check your `README.md` and `docs/` folder after every feature.
+- **Goal**: No more "I forgot to update the docs" excuses!
+
 ---
 
 ### 💡 Pro-Tip for Junior Devs:

@@ -1,39 +1,44 @@
 ---
-description: Start the autonomous Ralph development loop for the current project
+description: Start the autonomous Ralph development loop with Architecture 7.0 Resilience
 ---
 
-# Ralph-Antigravity Workflow
+# Ralph-Antigravity Workflow (Resilient Edition)
 
-This workflow executes a tight, iterative development loop using Gemini (Antigravity).
+This workflow executes an iterative development loop with task-specific branching and failure recovery.
 
 ## Workflow Logic (Artifact-Driven Loop)
 
 1. **Phase 1: Sync & Select**
-   - Run `python src/github_sync.py` to sync local `prd.md` files (recursive).
+   - Run `python src/github_sync.py` to sync PRDs.
    - Run `python src/ralph_controller.py next` to pick the next task.
-   - Use `--scope` or `--milestone` for targeted development.
+   - **Architecture 7.0**: This command automatically creates a unique branch (e.g., `ralph/issue-123`) and tracks the attempt count (max 5).
 
-2. **Phase 2: Context Discovery (New in 4.0)**
+2. **Phase 2: Context Discovery**
    - Run `python src/ralph_controller.py discover "[Task Title]"` to identify relevant files.
-   - Antigravity gathers "Context Anchors" (`ARCH.md` / `LEARNINGS.md`) from the task's parent directories.
-   - Antigravity *must* update the technical implementation plan using these specific anchors.
+   - Gathers "Context Anchors" to ensure domain knowledge is preserved.
 
 3. **Phase 3: Planning (Required)**
-   - Antigravity *must* analyze the fetched task and create an `implementation_plan.md` (Artifact).
-   - If in "Strict Mode", wait for user approval of the plan.
+   - Analyze requirements and create `implementation_plan.md`.
+   - **Important**: Plan must explicitly mention any documentation files that need updating.
 
-4. **Phase 3: Implementation**
-   - Execute the code changes specified in the `implementation_plan.md`.
+4. **Phase 4: Implementation**
+   - Execute code changes on the task-specific branch.
    - Update `task.md` to reflect progress.
 
-4. **Phase 4: Verification & Walkthrough (Required)**
-   - Run project-specific tests (Verify via logs/output).
-   - **Multimodal Check**: If the task involves UI, run `browser_subagent` to capture a screenshot for vision-based verification.
-   - Antigravity *must* create a `walkthrough.md` (Artifact) summarizing the changes and verification results.
+5. **Phase 5: Verification & Walkthrough**
+   - Run tests and linting.
+   - **Multimodal Check**: Use vision for UI tasks.
+   - Create `walkthrough.md`.
+   - **Failure Handling**: If verification fails, run `python src/ralph_controller.py fail [task_id]` and retry Phase 3.
 
-5. **Phase 5: Automated Audit & Closure**
-   - Commit changes referencing the issue ID.
-   - Run `python src/ralph_controller.py finish` (This script will automatically read the `walkthrough.md` and post it to GitHub before closing the issue).
+6. **Phase 6: Documentation Maintenance (New in 7.0)**
+   - **Mandatory**: Review `README.md`, `ARCH.md`, or files in `docs/`.
+   - Update them to reflect the new implementation details.
 
-6. **Iterate**
+7. **Phase 7: Automated Audit & Closure**
+   - Commit all changes to the task branch.
+   - Run `python src/ralph_controller.py finish`.
+   - **Architecture 7.0**: Automatically pushes the branch to remote and closes the GitHub issue.
+
+8. **Iterate**
    - Return to Phase 1.

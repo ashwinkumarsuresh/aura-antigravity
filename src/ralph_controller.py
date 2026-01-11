@@ -56,7 +56,7 @@ class RalphController:
             with open(self.status_file, 'r') as f:
                 self.state = json.load(f)
         else:
-            self.state = {"iterations": 0, "current_task": None}
+            self.state = {"iterations": 0, "current_task": None, "task_attempts": {}}
 
     def save_status(self):
         """Save internal state to ralph_status.json."""
@@ -84,8 +84,15 @@ class RalphController:
         # Sort by number to maintain priority
         issues.sort(key=lambda x: x['number'])
         
-        # Dependency Check (New for 3.0)
+        # Dependency & Failure Check
         for issue in issues:
+            task_id = str(issue['number'])
+            
+            # Skip if failed 5 times
+            if self.state.get("task_attempts", {}).get(task_id, 0) >= 5:
+                print(f"Skipping Task #{task_id}: Maximum attempts reached.")
+                continue
+
             body = issue.get('body', '')
             dep_match = re.search(r'Requires\s*#(\d+)', body)
             if dep_match:
@@ -97,7 +104,7 @@ class RalphController:
                         print(f"Skipping Task #{issue['number']}: Blocked by #{dep_id}")
                         continue
             
-            return issue # Return the first non-blocked issue
+            return issue # Return the first non-blocked, non-failed issue
             
         return None
 
@@ -108,25 +115,54 @@ class RalphController:
             print("No more tasks found matching criteria. Workflow Idle.")
             return None
         
+        task_id = str(task["number"])
+        attempts = self.state.get("task_attempts", {}).get(task_id, 0)
+        
+        if attempts >= 5:
+            print(f"!!! Task #{task_id} has failed 5 times. Marking as blocked.")
+            # Ensure label exists (import if needed or use gh directly)
+            run_command(["gh", "label", "create", "ralph-blocked", "--color", "ff0000"]) 
+            run_command(["gh", "issue", "edit", task_id, "--add-label", "ralph-blocked"])
+            run_command(["gh", "issue", "comment", task_id, "--body", "### ❌ Autonomous Failure\nRalph has attempted this task 5 times and failed to verify. Manual review required."])
+            return self.start_iteration(scope, milestone) # Now get_next_task will skip it
+
+        # Create task-specific branch
+        clean_title = re.sub(r'[^a-zA-Z0-9-]', '-', task["title"].lower())[:30]
+        branch_name = f"ralph/issue-{task_id}-{clean_title}"
+        print(f"Creating/Switching to branch: {branch_name}")
+        run_command(["git", "checkout", "-b", branch_name])
+        
         self.state["current_task"] = {
-            "id": task["number"],
+            "id": task_id,
             "title": task["title"],
-            "url": task["url"]
+            "url": task["url"],
+            "branch": branch_name
         }
         self.state["iterations"] += 1
+        self.state.setdefault("task_attempts", {})[task_id] = attempts + 1
         self.save_status()
         
-        print(f"--- Iteration {self.state['iterations']} ---")
+        print(f"--- Iteration {self.state['iterations']} (Attempt {attempts + 1}/5) ---")
         print(f"Active Task: #{task['number']} - {task['title']}")
         return task
 
-    def finish_task(self, summary=None, commit_hash=None):
+    def report_failure(self, task_id):
+        """Manually trigger an attempt increment if a task fails without finishing."""
+        self.load_status()
+        tid = str(task_id)
+        self.state.setdefault("task_attempts", {})[tid] = self.state.get("task_attempts", {}).get(tid, 0) + 1
+        self.save_status()
+        print(f"Failure recorded for Task #{tid}. Attempt count: {self.state['task_attempts'][tid]}")
+
+    def finish_task(self, summary=None):
         """Close the task on GitHub and update state using walkthrough artifact."""
         if not self.state["current_task"]:
             print("No active task to finish.")
             return
 
+        self.load_status() # Ensure we have latest attempts
         task_id = self.state["current_task"]["id"]
+        branch_name = self.state["current_task"].get("branch", "main")
         
         # 1. Prefer walkthrough.md for the summary
         walkthrough_path = os.path.join(self.project_dir, "walkthrough.md")
@@ -140,24 +176,28 @@ class RalphController:
             print("Error: No walkthrough.md found and no summary provided.")
             return
 
-        if commit_hash:
-            full_comment += f"\n**Commit:** {commit_hash}"
-        
         # 2. Post final summary as comment
         run_command(["gh", "issue", "comment", str(task_id), "--body", full_comment])
         
-        # 2. Close issue
+        # 3. Close issue
         run_command(["gh", "issue", "close", str(task_id)])
         
         print(f"Task #{task_id} closed on GitHub.")
         
-        # 3. Cleanup local state
+        # 4. Git Push Branch
+        print(f"Pushing branch {branch_name} to remote...")
+        run_command(["git", "push", "origin", branch_name])
+
+        # 5. Cleanup local state
         self.state["current_task"] = None
+        # Reset attempts on success
+        if str(task_id) in self.state.get("task_attempts", {}):
+            del self.state["task_attempts"][str(task_id)]
         self.save_status()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ralph-Antigravity Controller")
-    parser.add_argument("command", choices=["next", "finish", "verify-ui", "discover"])
+    parser.add_argument("command", choices=["next", "finish", "verify-ui", "discover", "fail"])
     parser.add_argument("summary", nargs="?", help="Summary for finish command")
     parser.add_argument("--scope", help="Filter by project scope (label)")
     parser.add_argument("--milestone", help="Filter by GitHub milestone")
@@ -172,6 +212,12 @@ if __name__ == "__main__":
         controller.finish_task(args.summary)
     elif args.command == "verify-ui":
          print("UI Verification mode enabled. Please capture a screenshot and provide it to the agent.")
+    elif args.command == "fail":
+        if args.summary: # Using summary arg as task_id for this command
+            ctrl = RalphController()
+            ctrl.report_failure(args.summary)
+        else:
+            print("Usage: fail [task_id]")
     elif args.command == "discover":
         if args.summary:
             ctrl = RalphController()
