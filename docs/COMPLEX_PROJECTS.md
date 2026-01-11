@@ -110,4 +110,18 @@ To get the most out of Ralph, your tasks shouldn't just be "detailed"—they sho
 *   **S (Small)**: If a human takes >1 hour to code it, the task is **Too Big**. Break it down.
 *   **Vertical Slicing**: Don't just "Update the Database." Instead, "Add Email field to DB and API." Deliver a full slice of functionality!
 
+### 10. Visual Feature Slicing 🍰
+Here is how you should think about your `prd.md` structure:
+
+```mermaid
+graph LR
+    subgraph "Bad (Horizontal)"
+        H1["DB: Create Table"] --> H2["API: Create Route"] --> H3["UI: Add Button"]
+    end
+    subgraph "Good (Vertical)"
+        V1["US-001: Register User (DB+API+UI)"]
+        V2["US-002: Login User (DB+API+UI)"]
+    end
+```
+
 Happy Scaling! 🚀
