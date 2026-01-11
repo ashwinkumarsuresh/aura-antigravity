@@ -75,7 +75,11 @@ Ralph-Antigravity is built for multi-app monorepos. You can have a `prd.md` in *
 
 Check out our **[Junior Dev Guide to Complex Projects](docs/COMPLEX_PROJECTS.md)** for deep-dive examples on dependencies, milestones, and monorepo management. 
 
-For developers, see the **[Technical Architecture](docs/ARCHITECTURE.md)** and **[Contributing Guide](docs/CONTRIBUTING.md)**.
+For developers, see:
+*   📜 **[Technical Architecture](docs/ARCHITECTURE.md)**
+*   🛠️ **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)**
+*   📖 **[System Glossary](docs/GLOSSARY.md)**
+*   🤝 **[Contributing Guide](docs/CONTRIBUTING.md)**
 
 ---
 
