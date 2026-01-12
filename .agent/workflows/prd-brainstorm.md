@@ -9,7 +9,8 @@ This workflow helps you go from an initial idea to a structured `prd.md` file th
 ## Workflow Phases
 
 ### 1. Discovery
-- Ask the user for the high-level objective of the project.
+- **Check for Ideation**: If `IDEAS.md` exists, read it first to understand the project's "North Star" and "Idea Bank".
+- Ask the user for the high-level objective (or pull it from `IDEAS.md`).
 - Determine the target audience and technology stack.
 - Identify the core "Must-Have" features.
 

@@ -41,12 +41,19 @@ Tell Antigravity (your AI assistant):
 
 ## 📖 How to use it step-by-step
 
-### Step 1: Brainstorm your idea 🧠
-If you aren't sure where to start, type:
+### Phase 0: Ideate & Explore 🧠
+If you have a rough idea but aren't ready for a technical list yet, type:
+```bash
+/ralph-ideate
+```
+I will help you explore different options and create an `IDEAS.md` "Bank" for your project.
+
+### Step 1: Brainstorm your PRD 📝
+Once your vision is clear, type:
 ```bash
 /prd-brainstorm
 ```
-I will chat with you about your idea and create a file called `prd.md` for you.
+I will chat with you about your idea (reading your `IDEAS.md` if it exists) and create a file called `prd.md`.
 
 ### Step 2: Upload your tasks ☁️
 Once your `prd.md` list is ready, type:

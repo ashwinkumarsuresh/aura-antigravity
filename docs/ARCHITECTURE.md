@@ -9,7 +9,8 @@ Ralph-Antigravity follows an **Event-Driven Loop** architecture, where the state
 
 ```mermaid
 graph TD
-    A["User Requirement (prd.md)"] --> B["GitHub Sync (github_sync.py)"]
+    Z["Vision/Concepts (IDEAS.md)"] --> A["User Requirement (prd.md)"]
+    A --> B["GitHub Sync (github_sync.py)"]
     B --> C["GitHub Issues (Source of Truth)"]
     C --> D["Controller (ralph_controller.py)"]
     D --> E["Antigravity Agent (Gemini)"]
@@ -115,6 +116,7 @@ Used for recursive context gathering. The controller crawls the directory tree u
 - **Architecture 6.0**: Professional User Stories & Acceptance Criteria.
 - **Architecture 7.1**: Resilient Branching & INVEST Task Atomization.
 - **Architecture 8.0**: Tiered Documentation (ADRs & Evidence-Based Walkthroughs).
+- **Architecture 9.0**: Ideation & Concept Exploration (Phase 0).
 
 ---
 

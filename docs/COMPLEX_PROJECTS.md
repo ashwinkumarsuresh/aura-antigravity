@@ -134,4 +134,11 @@ graph LR
     end
 ```
 
+### 12. The Idea Bank (Phase 0) 🧠
+Before you commit to a technical "User Story", use the **`/ralph-ideate`** command to explore the "Big Picture". 
+
+- **Why?**: It keeps your `prd.md` clean. Only "Confirmed" work goes into the PRD.
+- **Where?**: All your "maybe" features and tech stack comparisons live in `IDEAS.md`.
+- **How?**: When you eventually run `/prd-brainstorm`, Ralph will read your `IDEAS.md` to make sure the tasks he suggests align with your original vision.
+
 Happy Scaling! 🚀
